@@ -1,0 +1,1 @@
+Completing the courseinfo exercise on FullStackOpen.
