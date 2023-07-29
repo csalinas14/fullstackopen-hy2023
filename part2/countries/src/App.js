@@ -44,6 +44,7 @@ const App = () => {
         : countries.filter(c => c.name.common.toLowerCase().includes(newSearch.toLowerCase()))
         
         if (countriesToShow.length === 1){
+          console.log('here')
           setShowOne(true)
           setShowOneCountry(countriesToShow[0])
         }
@@ -57,7 +58,7 @@ const App = () => {
         setWeather(weather)
       })
     }
-  }, [newSearch, showOne])
+  }, [newSearch, showOne, showOneCountry])
 
   return(
     

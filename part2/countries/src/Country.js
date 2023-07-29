@@ -64,7 +64,7 @@ const DisplaySingleCountry = ({oneCountry, weather}) => {
 const Country = ({text, handleSearchChange, countries, filtertext, showOne, handleShowOneChange, showOneCountry, weather}) =>{
 
 
-    if(showOne){
+    if(showOne && weather !== null){
       console.log('showOne')
       return(
         <div>
