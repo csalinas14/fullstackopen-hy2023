@@ -1,6 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import personService from './services/persons'
 
-const Person = ({person}) => <div>{person.name} {person.number}</div>
+const Person = ({person, deleteEvent}) => {
+
+  return(
+    <div>
+      {person.name} {person.number} {' '}
+      <button onClick={deleteEvent}>delete</button>
+      </div>
+  )
+}
 
 const Filter = ({text, handleSearchChange}) =>
     <div>
@@ -36,14 +46,27 @@ const SingleForm = ({text, newText, changeFunc}) => {
   )
 }
 
-const Persons = ({personsArr, filterText}) => {
+const Persons = ({personsArr, filterText, deletePerson}) => {
   const personsToShow = filterText === ''
     ? personsArr
     : personsArr.filter(person => person.name.toLowerCase().includes(filterText.toLowerCase()))
+
   
   return(
     <div>
-        {personsToShow.map(person => <Person key={person.name} person={person}/>)}
+        {personsToShow.map(person => <Person key={person.name} person={person} deleteEvent={() => deletePerson(person)}/>)}
+    </div>
+  )
+}
+
+const Notification = ({message, type}) => {
+  if (message === null){
+    return null
+  }
+
+  return (
+    <div className={type}>
+      {message}
     </div>
   )
 }
@@ -52,17 +75,27 @@ const Persons = ({personsArr, filterText}) => {
 const App = () => {
 
   //application' states
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '000-000-0000' },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  const [persons, setPersons] = useState([]) 
+
   const [newName, setNewName] = useState('')
 
   const [newNumber, setNewNumber] = useState('')
 
   const [newSearch, setNewSearch] = useState('')
+
+  const [successMessage, setSuccessMessage] = useState(null)
+
+  const [errorMessage, setErrorMessage] = useState(null)
+
+  useEffect(() => {
+    console.log('effect')
+    personService
+      .getAll()
+      .then(initialPersons => {
+        console.log('promise fulfilled')
+        setPersons(initialPersons)
+      })
+  }, [])
 
   //event handlers
 
@@ -76,7 +109,31 @@ const App = () => {
     console.log(noDuplicateNames)
 
     if (!noDuplicateNames){
-      alert(`${newName} is already added to phonebook`)
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one`)){
+        console.log('Changed')
+        const person = persons.find(n => n.name === newName)
+        const changedPerson = {...person, number: newNumber}
+        console.log(changedPerson.id)
+        personService
+        .update(changedPerson.id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
+          setNewName('')
+          setNewNumber('')
+
+          setSuccessMessage(`Changed ${changedPerson.name}'s number to ${changedPerson.number}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage(`Information of ${changedPerson.name} has already been removed from the server`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+          setPersons(persons.filter(p => p.id !== changedPerson.id))
+        })
+      }
     }
     else if (!noDuplicateNumbers) {
       alert(`${newNumber} is already added to phonebook`)
@@ -87,9 +144,19 @@ const App = () => {
         number: newNumber
       }
 
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      personService
+      .create(personObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+
+        setSuccessMessage(`Added ${personObject.name}`)
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
+      })
+
     }
   }
 
@@ -122,9 +189,29 @@ const App = () => {
     }
   ]
 
+  const deletePerson = (person) => {
+    console.log(person)
+    if(window.confirm(`Delete ${person.name}?`)){
+        console.log('Deleted')
+        
+        personService
+          .deleteEntry(person)
+          .then(response =>
+          personService.getAll()
+        ).then(initialPersons => {
+          console.log('promise fulfilled')
+          setPersons(initialPersons)
+        })
+    }
+    
+}
+
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification message={successMessage} type={'success'}/>
+      <Notification message={errorMessage} type={'error'}/>
       
       <Filter text={newSearch} handleSearchChange={handleSearchChange}/>
 
@@ -132,7 +219,7 @@ const App = () => {
       
       <h2>Numbers</h2>
   
-      <Persons personsArr={persons} filterText={newSearch}/>
+      <Persons personsArr={persons} filterText={newSearch} deletePerson={deletePerson}/>
     </div>
   )
 }
