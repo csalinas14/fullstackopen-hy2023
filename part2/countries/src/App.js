@@ -57,6 +57,10 @@ const App = () => {
         //console.log(weather)
         setWeather(weather)
       })
+      .catch( error =>{
+        console.log('city not found')
+      }
+      )
     }
   }, [newSearch, showOne, showOneCountry])
 
