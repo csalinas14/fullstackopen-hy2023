@@ -117,6 +117,7 @@ const App = () => {
         personService
         .update(changedPerson.id, changedPerson)
         .then(returnedPerson => {
+          console.log(returnedPerson)
           setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
           setNewName('')
           setNewNumber('')
@@ -127,11 +128,19 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
-          setErrorMessage(`Information of ${changedPerson.name} has already been removed from the server`)
+          console.log(error)
+          if(error.response.data.error){
+            console.log(error.response.data.error)
+            setErrorMessage(error.response.data.error)
+          }
+          else{
+            setErrorMessage(`Information of ${changedPerson.name} has already been removed from the server`)
+            setPersons(persons.filter(p => p.id !== changedPerson.id))
+          }
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
-          setPersons(persons.filter(p => p.id !== changedPerson.id))
+          
         })
       }
     }
@@ -155,6 +164,13 @@ const App = () => {
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
+      })
+      .catch(error => {
+        console.log(error.response.data.error)
+        setErrorMessage(error.response.data.error)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
       })
 
     }
