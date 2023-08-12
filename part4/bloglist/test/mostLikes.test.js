@@ -1,18 +1,6 @@
-const favoriteBlog = require('../utils/list_helper').favoriteBlog
+const mostLikes = require('../utils/list_helper').mostLikes
 
-describe('favoriteBlog', () => {
-
-    const listWithOneBlog = [
-        {
-          _id: '5a422aa71b54a676234d17f8',
-          title: 'Go To Statement Considered Harmful',
-          author: 'Edsger W. Dijkstra',
-          url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-          likes: 5,
-          __v: 0
-        }
-      ]
-
+describe('mostLikes', () => {
     const listWithManyBlogs = [
         {
             _id: "5a422a851b54a676234d17f7",
@@ -65,25 +53,35 @@ describe('favoriteBlog', () => {
 
     ]
 
+    const listWithOneBlog = [
+        {
+          _id: '5a422aa71b54a676234d17f8',
+          title: 'Go To Statement Considered Harmful',
+          author: 'Edsger W. Dijkstra',
+          url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+          likes: 5,
+          __v: 0
+        }
+      ]
+
+    test('of a bigger list is calculated right', () =>{
+        expect(mostLikes(listWithManyBlogs)).toEqual(
+        {
+            author: "Edsger W. Dijkstra",
+            likes: 17
+        }
+        )
+      })
+
     test('of empty list is No blog', () => {
-        expect(favoriteBlog([])).toBe("No blogs")
+        expect(mostLikes([])).toBe("No blogs")
     })
 
     test('of one value is the favorite itself', () => {
-        expect(favoriteBlog(listWithOneBlog)).toEqual(
+        expect(mostLikes(listWithOneBlog)).toEqual(
         {
-            title: 'Go To Statement Considered Harmful',
             author: 'Edsger W. Dijkstra',
             likes: 5
-        })
-    })
-
-    test('of a bigger list is calculated right', () => {
-        expect(favoriteBlog(listWithManyBlogs)).toEqual(
-        {
-            title: "Canonical string reduction",
-            author: "Edsger W. Dijkstra",
-            likes: 12
         })
     })
 })

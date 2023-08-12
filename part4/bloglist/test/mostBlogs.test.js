@@ -1,18 +1,6 @@
-const favoriteBlog = require('../utils/list_helper').favoriteBlog
+const mostBlogs = require('../utils/list_helper').mostBlogs
 
-describe('favoriteBlog', () => {
-
-    const listWithOneBlog = [
-        {
-          _id: '5a422aa71b54a676234d17f8',
-          title: 'Go To Statement Considered Harmful',
-          author: 'Edsger W. Dijkstra',
-          url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-          likes: 5,
-          __v: 0
-        }
-      ]
-
+describe('mostBlogs', () => {
     const listWithManyBlogs = [
         {
             _id: "5a422a851b54a676234d17f7",
@@ -65,25 +53,34 @@ describe('favoriteBlog', () => {
 
     ]
 
-    test('of empty list is No blog', () => {
-        expect(favoriteBlog([])).toBe("No blogs")
-    })
-
-    test('of one value is the favorite itself', () => {
-        expect(favoriteBlog(listWithOneBlog)).toEqual(
+    const listWithOneBlog = [
         {
-            title: 'Go To Statement Considered Harmful',
-            author: 'Edsger W. Dijkstra',
-            likes: 5
+          _id: '5a422aa71b54a676234d17f8',
+          title: 'Go To Statement Considered Harmful',
+          author: 'Edsger W. Dijkstra',
+          url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+          likes: 5,
+          __v: 0
+        }
+      ]
+
+    test('of a bigger list is calculated right', () => {
+        expect(mostBlogs(listWithManyBlogs)).toEqual(
+        {
+            author: "Robert C. Martin",
+            blogs: 3
         })
     })
 
-    test('of a bigger list is calculated right', () => {
-        expect(favoriteBlog(listWithManyBlogs)).toEqual(
+    test('of empty list is No blog', () => {
+        expect(mostBlogs([])).toBe("No blogs")
+    })
+
+    test('of one value is the favorite itself', () => {
+        expect(mostBlogs(listWithOneBlog)).toEqual(
         {
-            title: "Canonical string reduction",
-            author: "Edsger W. Dijkstra",
-            likes: 12
+            author: 'Edsger W. Dijkstra',
+            blogs: 1
         })
     })
 })
