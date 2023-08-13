@@ -18,7 +18,7 @@ beforeEach(async () => {
     
 }, 10000)
 
-
+describe('when we have blogs added', () => {
 test('blogs are correct length and JSON', async () => {
     const response = await api.get('/api/blogs').expect('Content-Type', /application\/json/).expect(200)
 
@@ -36,6 +36,10 @@ test('blogs have an unique identifier property named "id"', async () => {
     }
     
 })
+
+})
+
+describe('addition of a new blog', () => {
 
 test('a valid blog can be added', async () => {
     const newBlog = {
@@ -103,7 +107,7 @@ test('a blog with missing "title" property should not be added', async () => {
       .send(newBlog)
       .expect(400)
     
-    console.log(response.status)
+    //console.log(response.status)
     
     const blogs = await helper.blogsInDb()
     //console.log(blogs)
@@ -123,12 +127,77 @@ test('a blog with missing "url" property should not be added', async () => {
       .send(newBlog)
       .expect(400)
     
-    console.log(response.status)
+    //console.log(response.status)
     
     const blogs = await helper.blogsInDb()
     //console.log(blogs)
     expect(blogs).toHaveLength(helper.initialBlogs.length)
 
+})
+
+})
+
+describe('deletion of a blog', () => {
+    test('succeeds with status code 204 if id is valid', async () => {
+        const blogsAtStart = await helper.blogsInDbWithId()
+        const blogToDelete = blogsAtStart[0]
+
+        //console.log(blogToDelete)
+
+        await api
+          .delete(`/api/blogs/${blogToDelete.id}`)
+          .expect(204)
+
+        const blogsAtEnd = await helper.blogsInDb()
+
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+        expect(blogsAtEnd).not.toContainEqual(blogToDelete)
+        //console.log(blogsAtEnd)
+    })
+
+    test('succeeds with no changes in db when using a non-existing id', async () => {
+        const nonExistingId = await helper.nonExistingId()
+        //console.log(nonExistingId)
+        const blogsAtStart = await helper.blogsInDb()
+
+        await api
+          .delete(`/api/blogs/${nonExistingId}`)
+          .expect(204)
+
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+
+        expect(blogsAtEnd).toEqual(blogsAtStart)
+
+        //console.log(blogsAtEnd)
+
+    })
+
+})
+
+describe('updating a blog', () => {
+    test('succeeds in updating the number of likes', async () => {
+        const blogsAtStart = await helper.blogsInDbWithId()
+        const blogToUpdate= blogsAtStart[0]
+
+        blogToUpdate.likes = 99999
+
+        await api
+          .put(`/api/blogs/${blogToUpdate.id}`)
+          .send(blogToUpdate)
+          .expect(200)
+
+        
+        const blogsAtEnd = await helper.blogsInDbWithId()
+        expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+
+        expect(blogsAtEnd).toContainEqual(blogToUpdate)
+        
+        const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+        expect(updatedBlog.likes).toBe(99999)
+        
+    }, 30000)
 })
 
 afterAll(async () => {
