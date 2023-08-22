@@ -1,14 +1,16 @@
-const SingleForm = ({name, value, handleChange}) => {
+const SingleForm = ({ name, value, handleChange }) => {
 
   //console.log(name)
   return(
     <div>
       <b>{name + ' '}</b>
       <input
+        id={'blogForm' + name}
         type="text"
         value={value}
         name={name}
-        onChange={handleChange}
+        onChange={({ target }) => handleChange(target.value)}
+        placeholder={'write blog ' + name + ' here'}
       />
     </div>
   )

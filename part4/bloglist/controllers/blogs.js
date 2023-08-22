@@ -66,6 +66,8 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
         })
         */
     const savedBlog = await blog.save()
+    const popBlog = await savedBlog.populate('user')
+    console.log(popBlog)
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
     response.status(201).json(savedBlog)
@@ -86,9 +88,17 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   console.log(blog)
   //const user = await User.findById(decodedToken.id)
   const user = await User.findById(request.user)
+
   if(blog && (blog.user.toString() !== user._id.toString())){
     return response.status(401).json({ error: 'invalid user' })
   }
+
+  if(blog){
+    user.blogs = user.blogs.filter(b => b.toString() !== blog.id.toString() )
+
+    await user.save()
+  }
+  //await blog.remove()
 
   await Blog.findByIdAndRemove(request.params.id)
   response.status(204).end()
@@ -104,6 +114,8 @@ blogsRouter.put('/:id', async (request, response) => {
     likes: body.likes || 0
   }
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+  await updatedBlog.populate('user')
+  console.log(updatedBlog)
   response.json(updatedBlog)
 
 })

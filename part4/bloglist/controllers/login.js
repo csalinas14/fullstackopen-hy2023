@@ -14,6 +14,8 @@ loginRouter.post('/', async (request, response) => {
     : await bcrypt.compare(password, user.passwordHash)
 
   if(!(user && passwordCorrect)){
+    //console.log(request.body)
+    //console.log('invalid username or password')
     return response.status(401).json({
       error: 'invalid username or password'
     })
