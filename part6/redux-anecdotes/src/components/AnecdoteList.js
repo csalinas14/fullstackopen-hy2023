@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { addOneVote } from '../reducers/anecdoteReducer'
+import { setNotification, resetNotification } from '../reducers/notificationReducer'
 
 const Anecdote = ({ anecdote, handleSubmit }) => {
     return(
@@ -8,8 +9,8 @@ const Anecdote = ({ anecdote, handleSubmit }) => {
             {anecdote.content}
           </div>
           <div>
-            has {anecdote.votes}
-            <button onClick={() => handleSubmit()}>vote</button>
+            has {anecdote.likes}
+            <button onClick={handleSubmit}>vote</button>
           </div>
         </div>
     )
@@ -20,13 +21,23 @@ const AnecdoteList = () => {
   const anecdotes = useSelector(({filter, anecdotes}) => anecdotes
     .filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase())))
 
+  const addLike = ( event, id, content ) => {
+    event.preventDefault()
+    dispatch(addOneVote(id))
+
+    dispatch(setNotification(`you liked ${content}`))
+    setTimeout(() => {
+      dispatch(resetNotification())
+    }, 5000)
+  }
+
   return(
     <div>
       {anecdotes.map(anecdote =>
         <Anecdote 
           key={anecdote.id}
           anecdote={anecdote}
-          handleSubmit={() => dispatch(addOneVote(anecdote.id))}
+          handleSubmit={(e) => addLike(e, anecdote.id, anecdote.content)}
         />
       )}
     </div>
