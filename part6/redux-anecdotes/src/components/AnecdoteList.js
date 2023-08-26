@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { addOneVote } from '../reducers/anecdoteReducer'
-import { setNotification, resetNotification } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 const Anecdote = ({ anecdote, handleSubmit }) => {
     return(
@@ -21,14 +21,16 @@ const AnecdoteList = () => {
   const anecdotes = useSelector(({filter, anecdotes}) => anecdotes
     .filter(anecdote => anecdote.content.toLowerCase().includes(filter.toLowerCase())))
 
-  const addLike = ( event, id, content ) => {
+  const addLike = ( event, anecdote ) => {
     event.preventDefault()
-    dispatch(addOneVote(id))
+    dispatch(addOneVote(anecdote))
 
-    dispatch(setNotification(`you liked ${content}`))
+    dispatch(setNotification(`you liked ${anecdote.content}`, 10))
+    /*
     setTimeout(() => {
       dispatch(resetNotification())
     }, 5000)
+    */
   }
 
   return(
@@ -37,7 +39,7 @@ const AnecdoteList = () => {
         <Anecdote 
           key={anecdote.id}
           anecdote={anecdote}
-          handleSubmit={(e) => addLike(e, anecdote.id, anecdote.content)}
+          handleSubmit={(e) => addLike(e, anecdote)}
         />
       )}
     </div>

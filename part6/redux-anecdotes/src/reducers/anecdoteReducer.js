@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+import anecdoteService from '../services/anecdotes'
+/*
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -8,10 +9,6 @@ const anecdotesAtStart = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
-
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const sortAncedotesByLikes = ancedotesArray => ancedotesArray.sort((a,b) => b.likes - a.likes)
 
 const asObject = (anecdote) => {
   return {
@@ -23,34 +20,86 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
+
+const getId = () => (100000 * Math.random()).toFixed(0)
+*/
+const sortAncedotesByLikes = ancedotesArray => ancedotesArray.sort((a,b) => b.likes - a.likes)
+
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
-  initialState,
+  initialState: [],
   reducers: {
+    /*
     createAnecdote(state, action) {
+      
       const content = action.payload
       const newAnecdote = {
         content,
         id: getId(),
         likes: 0
       }
-      state.push(newAnecdote)
+      
+      state.push(action.payload)
     },
+    */
+   /*
     addOneVote(state, action){
-      console.log(action.payload)
+      //console.log(action.payload)
       const id = action.payload
       const anecdoteToChange = state.find(anecdote => anecdote.id === id)
-      console.log(anecdoteToChange)
+      //console.log(anecdoteToChange)
       const changedAnecdote = {
         ...anecdoteToChange,
         likes: anecdoteToChange.likes + 1
       }
       return sortAncedotesByLikes(state.map(anecdote => anecdote.id !== id ? anecdote : changedAnecdote))
+    },
+    */
+    appendAnecdote(state, action){
+      state.push(action.payload)
+    },
+    setAnecdotes(state, action){
+      return action.payload
+    },
+    updateLikesOfAnecdote(state, action){
+      const changedAnecdote = action.payload
+      //console.log(id )
+      return sortAncedotesByLikes(state.map(anecdote => anecdote.id !== changedAnecdote.id ? anecdote : changedAnecdote))
     }
   }
 })
 
-export const { createAnecdote, addOneVote } = anecdoteSlice.actions
+export const { appendAnecdote, setAnecdotes, getAnecdote, updateLikesOfAnecdote } = anecdoteSlice.actions
+
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    const sortedAnecdotes = sortAncedotesByLikes(anecdotes)
+    dispatch(setAnecdotes(sortedAnecdotes))
+  }
+}
+
+export const createAnecdote = content => {
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createAnecdote(content)
+    dispatch(appendAnecdote(newAnecdote))
+  }
+}
+
+export const addOneVote = ( anecdote ) => {
+  return async dispatch => {
+    const changedAnecdote = {
+      ...anecdote,
+      likes: anecdote.likes + 1
+    }
+    //console.log(anecdoteToChange)
+    const anecdoteToChange = await anecdoteService.updateAnecodte(changedAnecdote)
+    //console.log(anecdoteToChange)
+    //console.log(id)
+    dispatch(updateLikesOfAnecdote(anecdoteToChange))
+  }
+}
+
 export default anecdoteSlice.reducer
 /*
 const anecdoteReducer = (state = initialState, action) => {
