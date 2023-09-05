@@ -6,9 +6,9 @@ const notificationReducer = (state, action) => {
     case 'SHOW':
       return action.payload
     case 'HIDE':
-      return false
+      return ''
     default:
-      return false
+      return ''
   }
 }
 /* eslint-enable */
@@ -17,7 +17,7 @@ const NotificationContext = createContext()
 export const NotificationContextProvider = (props) => {
   const [notification, notificationDispatch] = useReducer(
     notificationReducer,
-    false
+    ''
   )
 
   return (
