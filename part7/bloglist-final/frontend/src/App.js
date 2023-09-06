@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 
 import Home from './components/Home'
+import UserList from './components/UserList'
 //redux
 //import { useDispatch, useSelector } from 'react-redux'
 //import { initializeBlogs } from './reducers/blogReducer'
@@ -30,6 +31,7 @@ const App = () => {
   return (
     <div>
       <Routes>
+        <Route path="/users" element={<UserList />} />
         <Route path="/" element={<Home />} />
       </Routes>
     </div>
