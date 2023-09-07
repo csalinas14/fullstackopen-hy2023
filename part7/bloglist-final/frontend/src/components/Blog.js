@@ -1,4 +1,4 @@
-import { useState } from 'react'
+//import { useState } from 'react'
 import PropTypes from 'prop-types'
 
 //redux
@@ -8,19 +8,28 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addOneLike, delBlog } from '../reducers/blogReducer'
 */
 //react query
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useNotificationDispatch } from '../NotificationContext'
-import blogService from '../services/blogs'
+//import { useMutation, useQueryClient } from '@tanstack/react-query'
+//import { useNotificationDispatch } from '../NotificationContext'
+//import blogService from '../services/blogs'
 
 //react context
-import { useUserValue } from '../UserContext'
+//import { useUserValue } from '../UserContext'
+
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
-  //redux
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5,
+  }
   /*
+  //redux
   const dispatch = useDispatch()
   const user = useSelector(({ user }) => user)
-*/
+
 
   //react context
   const userData = useUserValue()
@@ -31,17 +40,6 @@ const Blog = ({ blog }) => {
 
   //react query
   const queryClient = useQueryClient()
-
-  const updateBlogMutation = useMutation({
-    mutationFn: blogService.update,
-    onSuccess: (newBlog) => {
-      const blogs = queryClient.getQueryData({ queryKey: ['blogs'] })
-      const newBlogs = sortBlogs(
-        blogs.map((b) => (b.id !== newBlog.id ? b : newBlog))
-      )
-      queryClient.setQueryData({ queryKey: ['blogs'] }, newBlogs)
-    },
-  })
 
   const deleteBlogMutation = useMutation({
     mutationFn: blogService.remove,
@@ -66,32 +64,6 @@ const Blog = ({ blog }) => {
   }
   //console.log(showDeleteButton)
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
-  const addLikes = (event) => {
-    event.preventDefault()
-    //redux
-    /*
-    dispatch(addOneLike(blog))
-    dispatch(setNotification(`you liked ${blog.title}`, 10))
-    */
-    //react query
-    updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 })
-    notificationDispatch({
-      type: 'SHOW',
-      payload: `blog '${blog.title}' liked`,
-    })
-    setTimeout(() => {
-      notificationDispatch({ type: 'HIDE' })
-    }, 5000)
-  }
-
   const deleteBlog = (event) => {
     event.preventDefault()
     //removeBlog(blog)
@@ -101,7 +73,6 @@ const Blog = ({ blog }) => {
       /*
       dispatch(delBlog(blog.id))
       dispatch(setNotification(`you removed ${blog.title}`, 10))
-      */
       //react query
       deleteBlogMutation.mutate(blog.id)
       notificationDispatch({
@@ -117,7 +88,9 @@ const Blog = ({ blog }) => {
   return (
     <div style={blogStyle} className="blog">
       <div style={hideWhenVisible}>
-        {blog.title} {blog.author + ' '}
+        <Link to={`/blogs/${blog.id}`}>
+          {blog.title} {blog.author}
+        </Link>
         <button onClick={toggleVisibility}>view</button>
       </div>
       <div style={showWhenVisible} className="togglableContent">
@@ -141,6 +114,17 @@ const Blog = ({ blog }) => {
           </button>
         </div>
       </div>
+    </div>
+  )*/
+
+  return (
+    <div style={blogStyle}>
+      <Link to={`/blogs/${blog.id}`}>
+        {blog.title} {blog.author}
+      </Link>
+      {/*
+      <button onClick={toggleVisibility}>view</button>
+*/}
     </div>
   )
 }
