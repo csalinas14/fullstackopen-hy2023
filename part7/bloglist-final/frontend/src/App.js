@@ -5,6 +5,7 @@ import Home from './components/Home'
 import UserList from './components/UserList'
 import User from './components/User'
 import BlogView from './components/BlogView'
+import Menu from './components/Menu'
 //redux
 //import { useDispatch, useSelector } from 'react-redux'
 //import { initializeBlogs } from './reducers/blogReducer'
@@ -91,6 +92,7 @@ const App = () => {
 
   return (
     <div>
+      <Menu />
       <Routes>
         <Route
           path="/blogs/:id"

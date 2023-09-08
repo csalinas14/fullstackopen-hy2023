@@ -1,10 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNotificationDispatch } from '../NotificationContext'
 import blogService from '../services/blogs'
+import { useState } from 'react'
 
 const BlogView = ({ blogData }) => {
   const notificationDispatch = useNotificationDispatch()
   const queryClient = useQueryClient()
+
+  const [commentInput, setCommentInput] = useState('')
 
   const sortBlogs = (blogsArray) => blogsArray.sort((a, b) => b.likes - a.likes)
 
@@ -50,6 +53,22 @@ const BlogView = ({ blogData }) => {
       </button>
       <br />
       added by {blogData.user.name}
+      <br />
+      <br />
+      <b>comments</b>
+      <br /> <br />
+      <input
+        type="text"
+        value={commentInput}
+        onChange={({ target }) => setCommentInput(target.value)}
+      ></input>{' '}
+      <button>add comment</button>
+      <br />
+      <ul>
+        {blogData.comments.map((comment, i) => (
+          <li key={i}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 }

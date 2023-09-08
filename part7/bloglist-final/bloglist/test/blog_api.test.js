@@ -259,6 +259,26 @@ describe('updating a blog', () => {
   }, 30000)
 })
 
+describe('comments in blogs', () => {
+  test.only('adding a comment', async () => {
+    const blogsAtStart = await helper.blogsInDbWithId()
+    const blogToUpdate = blogsAtStart[0]
+
+    const comment = 'test'
+
+    await api
+      .post(`/api/blogs/${blogToUpdate.id}/comments`)
+      .send({
+        comment: comment,
+      })
+      .expect(201)
+
+    const blogsAtEnd = await helper.blogsInDbWithId()
+    const updatedBlog = blogsAtEnd.find((blog) => blog.id === blogToUpdate.id)
+    expect(updatedBlog.comments[0]).toBe(comment)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
