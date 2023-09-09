@@ -116,6 +116,7 @@ blogsRouter.put('/:id', async (request, response) => {
 })
 
 blogsRouter.post('/:id/comments', async (request, response) => {
+  console.log(request)
   const body = request.body
   if (!body.comment) {
     response.status(400).end()

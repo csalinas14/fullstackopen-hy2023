@@ -1,5 +1,6 @@
 //import { useSelector } from 'react-redux'
 import { useNotificationValue } from '../NotificationContext'
+import { Alert } from '@mui/material'
 
 const Notification = ({ type }) => {
   //redux
@@ -10,7 +11,11 @@ const Notification = ({ type }) => {
     return null
   }
 
-  return <div className={type}>{notification}</div>
+  return (
+    <div>
+      <Alert severity={type}>{notification}</Alert>
+    </div>
+  )
 }
 
 export default Notification

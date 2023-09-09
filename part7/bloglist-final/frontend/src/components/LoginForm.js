@@ -8,6 +8,8 @@ import { login } from '../reducers/userReducer'
 import { login, useUserDispatch } from '../UserContext'
 import { useNotificationDispatch } from '../NotificationContext'
 
+import { TextField, Button } from '@mui/material'
+
 const LoginForm = () => {
   //redux
   //const dispatch = useDispatch()
@@ -38,28 +40,32 @@ const LoginForm = () => {
   return (
     <form onSubmit={handleLogin}>
       <div>
-        username
-        <input
+        <TextField
           id="username"
-          type="text"
           value={username}
-          name="Username"
+          label="username"
+          size="small"
           onChange={({ target }) => setUsername(target.value)}
         />
       </div>
       <div>
-        password
-        <input
+        <TextField
           id="password"
           type="password"
           value={password}
-          name="Password"
+          label="password"
+          size="small"
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button id="login-button" type="submit">
+      <Button
+        variant="contained"
+        color="primary"
+        id="login-button"
+        type="submit"
+      >
         login
-      </button>
+      </Button>
     </form>
   )
 }

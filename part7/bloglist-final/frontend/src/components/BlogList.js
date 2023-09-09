@@ -2,6 +2,14 @@
 import Blog from './Blog'
 import { useQuery } from '@tanstack/react-query'
 import blogService from '../services/blogs'
+import {
+  Table,
+  TableBody,
+  TableContainer,
+  TableCell,
+  TableRow,
+  Paper,
+} from '@mui/material'
 
 const BlogList = () => {
   //const dispatch = useDispatch()
@@ -37,9 +45,19 @@ const BlogList = () => {
 
   return (
     <div>
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableBody>
+            {blogs.map((blog) => (
+              <TableRow key={blog.id}>
+                <TableCell>
+                  <Blog key={blog.id} blog={blog} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

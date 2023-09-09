@@ -6,6 +6,7 @@ import UserList from './components/UserList'
 import User from './components/User'
 import BlogView from './components/BlogView'
 import Menu from './components/Menu'
+import Notification from './components/Notification'
 //redux
 //import { useDispatch, useSelector } from 'react-redux'
 //import { initializeBlogs } from './reducers/blogReducer'
@@ -19,6 +20,9 @@ import userService from './services/users'
 import blogService from './services/blogs'
 
 import { useList } from './hooks/list'
+
+//MUI
+import { Container } from '@mui/material'
 
 const App = () => {
   //react query and context
@@ -91,18 +95,21 @@ const App = () => {
   //console.log(userMatch)
 
   return (
-    <div>
-      <Menu />
-      <Routes>
-        <Route
-          path="/blogs/:id"
-          element={<BlogView blogData={blogId} />}
-        ></Route>
-        <Route path="/users/:id" element={<User userData={userId} />}></Route>
-        <Route path="/users" element={<UserList users={users} />} />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </div>
+    <Container>
+      <div>
+        <Menu />
+        <Notification />
+        <Routes>
+          <Route
+            path="/blogs/:id"
+            element={<BlogView blogData={blogId} />}
+          ></Route>
+          <Route path="/users/:id" element={<User userData={userId} />}></Route>
+          <Route path="/users" element={<UserList users={users} />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
+    </Container>
   )
 }
 

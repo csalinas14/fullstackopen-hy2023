@@ -1,6 +1,6 @@
 import LoginForm from './LoginForm'
 import BlogForm from './BlogForm'
-import Notification from './Notification'
+//import Notification from './Notification'
 import Togglable from './Togglable'
 import BlogList from './BlogList'
 import { useRef } from 'react'
@@ -26,8 +26,7 @@ const Home = () => {
   if (userData === null || userData.error) {
     return (
       <>
-        <h2>blogs</h2>
-        <Notification type="error" />
+        <h2>login</h2>
         <LoginForm />
       </>
     )
@@ -36,7 +35,6 @@ const Home = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification type={'success'} />
       {userData.user.name} logged in
       <button onClick={logoutEvent}>logout</button>
       <br />

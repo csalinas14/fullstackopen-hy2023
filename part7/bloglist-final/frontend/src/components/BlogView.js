@@ -22,6 +22,19 @@ const BlogView = ({ blogData }) => {
     },
   })
 
+  const addCommentMutation = useMutation({
+    mutationFn: blogService.addComment,
+    onSuccess: (response, variables) => {
+      const blogs = queryClient.getQueryData({ queryKey: ['blogs'] })
+      blogData.comments = blogData.comments.concat(variables.comment)
+      const newBlogs = blogs.map((b) => (b.id !== blogData.id ? b : blogData))
+      queryClient.setQueryData({ queryKey: ['blogs'], newBlogs })
+    },
+    onError: (error) => {
+      console.log(error)
+    },
+  })
+
   const addLikes = (event) => {
     event.preventDefault()
     //redux
@@ -38,6 +51,13 @@ const BlogView = ({ blogData }) => {
     setTimeout(() => {
       notificationDispatch({ type: 'HIDE' })
     }, 5000)
+  }
+
+  const addComment = (event) => {
+    event.preventDefault()
+    //console.log(commentInput)
+    addCommentMutation.mutate({ id: blogData.id, comment: commentInput })
+    setCommentInput('')
   }
 
   return (
@@ -62,7 +82,7 @@ const BlogView = ({ blogData }) => {
         value={commentInput}
         onChange={({ target }) => setCommentInput(target.value)}
       ></input>{' '}
-      <button>add comment</button>
+      <button onClick={addComment}>add comment</button>
       <br />
       <ul>
         {blogData.comments.map((comment, i) => (

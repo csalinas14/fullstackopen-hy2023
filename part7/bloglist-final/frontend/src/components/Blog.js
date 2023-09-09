@@ -18,6 +18,7 @@ import { addOneLike, delBlog } from '../reducers/blogReducer'
 import { Link } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
+  /**
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -25,6 +26,7 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5,
   }
+  */
   /*
   //redux
   const dispatch = useDispatch()
@@ -118,14 +120,9 @@ const Blog = ({ blog }) => {
   )*/
 
   return (
-    <div style={blogStyle}>
-      <Link to={`/blogs/${blog.id}`}>
-        {blog.title} {blog.author}
-      </Link>
-      {/*
-      <button onClick={toggleVisibility}>view</button>
-*/}
-    </div>
+    <Link to={`/blogs/${blog.id}`}>
+      {blog.title} {blog.author}
+    </Link>
   )
 }
 
