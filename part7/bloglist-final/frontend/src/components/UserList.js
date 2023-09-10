@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Typography } from '@mui/material'
 
 const UserLine = ({ userInfo }) => {
   return (
@@ -16,7 +17,7 @@ const UserList = ({ users }) => {
 
   return (
     <div>
-      <h2>Users</h2>
+      <Typography variant="h3">Users</Typography>
       <table>
         <tbody>
           <tr>

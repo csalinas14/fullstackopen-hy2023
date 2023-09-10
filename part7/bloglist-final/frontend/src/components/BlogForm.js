@@ -1,5 +1,6 @@
 import SingleForm from './SingleForm'
 import { useState } from 'react'
+import { Button } from '@mui/material'
 
 //redux
 /*
@@ -98,9 +99,9 @@ const BlogForm = (toggableRef) => {
           handleChange={form.handleChange}
         />
       ))}
-      <button id="blogFormCreateButton" type="submit">
+      <Button id="blogFormCreateButton" type="submit">
         create
-      </button>
+      </Button>
     </form>
   )
 }
