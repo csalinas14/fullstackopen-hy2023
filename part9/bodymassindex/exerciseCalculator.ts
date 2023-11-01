@@ -60,15 +60,34 @@ const parseArgumentsExercise = (args: string[]): exerciseValues => {
   if (args.length < 4) throw new Error('Too few arguments')
 
   let target
-  let hours
+  let tempHours: number[] = []
 
   for (let i = 3; i < args.length; i++) {
-    if (!isNotNumber(args[i])) {
+    if (isNotNumber(args[i])) {
+      throw new Error('Provided values included not a number')
     }
+    tempHours.push(Number(args[i]))
   }
 
   if (!isNotNumber(args[2])) {
+    return {
+      target: Number(args[2]),
+      hours: tempHours,
+    }
+  } else {
+    throw new Error('Provided target was not a number')
   }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+  const { target, hours } = parseArgumentsExercise(process.argv)
+  console.log(calculateExercises(hours, target))
+} catch (error: unknown) {
+  let errorMessage = 'Something bad happened '
+  if (error instanceof Error) {
+    errorMessage += 'Error: ' + error.message
+  }
+  console.log(errorMessage)
+}
+
+//console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
