@@ -56,30 +56,34 @@ interface exerciseValues {
   hours: number[];
 }
 
-export const parseArgumentsExercise = (args: string[]): exerciseValues => {
-  if (args.length < 4) throw new Error('Too few arguments');
+export const parseArgumentsExercise = (
+  args: number[],
+  target: number
+): exerciseValues => {
+  if (!args || !target) throw new Error('parameters missing');
 
   const tempHours: number[] = [];
 
-  for (let i = 3; i < args.length; i++) {
+  for (let i = 0; i < args.length; i++) {
     if (isNotNumber(args[i])) {
-      throw new Error('Provided values included not a number');
+      throw new Error('malformatted parameters');
     }
     tempHours.push(Number(args[i]));
   }
 
-  if (!isNotNumber(args[2])) {
+  if (!isNotNumber(target)) {
     return {
-      target: Number(args[2]),
+      target: Number(target),
       hours: tempHours
     };
   } else {
-    throw new Error('Provided target was not a number');
+    throw new Error('malformatted parameters');
   }
 };
 
+/*
 try {
-  const { target, hours } = parseArgumentsExercise(process.argv);
+  //const { target, hours } = parseArgumentsExercise(process.argv);
   console.log(calculateExercises(hours, target));
 } catch (error: unknown) {
   let errorMessage = 'Something bad happened ';
@@ -90,3 +94,4 @@ try {
 }
 
 //console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+*/

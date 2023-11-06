@@ -1,8 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import express from 'express';
 import { calcuculateBmi, parseArguments } from './bmiCalculator';
+import {
+  parseArgumentsExercise,
+  calculateExercises
+} from './exerciseCalculator';
 
 //const express = require('express')
 const app = express();
+app.use(express.json());
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
@@ -28,11 +34,29 @@ app.get('/bmi', (req, res) => {
   }
 });
 
-/*
-app.post('/exercises', (res, req) => {
-
-})
-*/
+app.post('/exercises', (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const data = req.body;
+  console.log(data);
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const daily_exercises: number[] = data.daily_exercises;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const data_target: number = data.target;
+    const { target, hours } = parseArgumentsExercise(
+      daily_exercises,
+      data_target
+    );
+    const ans = calculateExercises(hours, target);
+    return res.send({ ans });
+  } catch (error: unknown) {
+    let errorMessage = 'Something bad happened ';
+    if (error instanceof Error) {
+      errorMessage += 'Error: ' + error.message;
+    }
+    return res.json({ error: errorMessage });
+  }
+});
 
 const PORT = 3003;
 
