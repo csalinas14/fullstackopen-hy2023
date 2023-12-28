@@ -20,9 +20,24 @@ export enum Weather {
 export interface DiaryEntry {
     id: number;
     date: string;
-    weather: Weather;
-    visibility: Visibility;
+    weather: string;
+    visibility: string;
     comment: string;
 }
 
+export interface DiaryFormProps {
+  diaries: DiaryEntry[],
+  setDiariesFunc: React.Dispatch<React.SetStateAction<DiaryEntry[]>>
+}
+
 export type ContentProps = Omit<DiaryEntry, 'comment'>;
+
+export type NewDiary = Omit<DiaryEntry, "id">;
+
+export interface ValidationError {
+  message: string;
+  errors: Record<string, string[]>;
+  response: {
+    data: string;
+  }
+}

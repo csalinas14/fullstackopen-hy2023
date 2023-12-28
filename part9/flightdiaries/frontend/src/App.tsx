@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Content from "./components/Content";
-import axios from "axios";
-import { ContentProps } from "./types";
+import DiaryForm from "./components/DiaryForm";
+import { DiaryEntry } from "./types";
+import { getAllDiaries } from "./services/diaryService";
 
 
 const App = () => {
 
-  const [diaries, setDiaries] = useState<ContentProps[]>([])
+  const [diaries, setDiaries] = useState<DiaryEntry[]>([])
 
   useEffect(() => {
-    axios.get<ContentProps[]>('http://localhost:3000/api/diaries').then(response => {
-      //console.log(response.data);
-      setDiaries(response.data);
-    })
+    getAllDiaries().then(data => setDiaries(data))
   }, [])
 
   return(
     <div>
+      <DiaryForm diaries={diaries} setDiariesFunc={setDiaries}/>
       <Header name={'Diary Entries'}/>
       <Content diaries={diaries} />
     </div>
